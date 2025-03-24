@@ -74,7 +74,7 @@ const seo = {
     width: 100%;
     height: auto;
     border-radius: 8px;
-    transition: transform 0.2s ease-in-out;
+    /* transition: transform 0.2s ease-in-out; */ /* Removido temporariamente */
     cursor: pointer;
   }
 
@@ -132,20 +132,19 @@ const seo = {
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function initGallery() {
     const imageData = JSON.parse(document.currentScript.textContent);
-    const galleryGrid = document.querySelector('.gallery-grid');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxTitle = document.getElementById('lightbox-title');
-    const lightboxDescription = document.getElementById('lightbox-description');
-    const closeButton = document.querySelector('.close');
-    const prevButton = document.querySelector('.prev');
-    const nextButton = document.querySelector('.next');
+    const galleryItems = document.querySelectorAll('.gallery .gallery-grid .gallery-item');
+    const lightbox = document.querySelector('#lightbox');
+    const lightboxImg = document.querySelector('#lightbox #lightbox-img');
+    const lightboxTitle = document.querySelector('#lightbox #lightbox-title');
+    const lightboxDescription = document.querySelector('#lightbox #lightbox-description');
+    const closeButton = document.querySelector('#lightbox .close');
+    const prevButton = document.querySelector('#lightbox .prev');
+    const nextButton = document.querySelector('#lightbox .next');
 
     let currentImageIndex = 0;
 
-    // Funções de manipulação da Lightbox
     function openLightbox(index) {
       currentImageIndex = index;
       lightboxImg.src = imageData[index].url;
@@ -162,18 +161,16 @@ const seo = {
       currentImageIndex = (currentImageIndex - 1 + imageData.length) % imageData.length;
       lightboxImg.src = imageData[currentImageIndex].url;
       lightboxTitle.textContent = imageData[currentImageIndex].name;
-      lightboxDescription = imageData[currentImageIndex].description;
+      lightboxDescription.textContent = imageData[currentImageIndex].description;
     }
 
     function nextImage() {
       currentImageIndex = (currentImageIndex + 1) % imageData.length;
       lightboxImg.src = imageData[currentImageIndex].url;
       lightboxTitle.textContent = imageData[currentImageIndex].name;
-      lightboxDescription = imageData[currentImageIndex].description;
+      lightboxDescription.textContent = imageData[currentImageIndex].description;
     }
 
-    // Adiciona event listeners para cada imagem
-    const galleryItems = document.querySelectorAll('.gallery-item');
     galleryItems.forEach((item) => {
       item.addEventListener('click', () => {
         const index = parseInt(item.dataset.index);
@@ -181,11 +178,12 @@ const seo = {
       });
     });
 
-    // Adiciona event listeners aos botões da Lightbox
     closeButton.addEventListener('click', closeLightbox);
     prevButton.addEventListener('click', prevImage);
     nextButton.addEventListener('click', nextImage);
-  });
+  }
+
+  document.addEventListener('DOMContentLoaded', initGallery);
 </script>
 <script is:inline>
   {
