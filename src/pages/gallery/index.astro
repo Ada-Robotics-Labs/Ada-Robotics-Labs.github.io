@@ -1,10 +1,27 @@
+      
 ---
 import { Container } from '@components/odyssey-theme';
 import Layout from '../../layouts/Page.astro';
 
-// Importa as imagens da pasta /src/assets/gallery
-const images = import.meta.glob('/src/assets/gallery/*.jpg', { eager: true });
-const imageUrls = Object.values(images).map((image) => image.default);
+// Array de objetos com URL, nome e descrição
+const imageData = [
+  {
+    url: '/assets/gallery/teste.jpg',
+    name: 'Imagem 1',
+    description: 'Uma bela paisagem.'
+  },
+  {
+    url: '/assets/gallery/image1.jpg',
+    name: 'Imagem 2',
+    description: 'Um retrato artístico.'
+  },
+  {
+    url: '/assets/gallery/image2.jpg',
+    name: 'Imagem 3',
+    description: 'Uma foto de arquitetura.'
+  },
+  // Adicione mais objetos conforme necessário
+];
 
 const seo = {
   title: 'Gallery | Astro Odyssey Theme',
@@ -17,11 +34,11 @@ const seo = {
     <section class="gallery">
       <h2>Photo Gallery</h2>
       <div class="gallery-grid">
-        {imageUrls.map((url, index) => (
+        {imageData.map((image, index) => (
           <button class="gallery-item-button" data-index={index}>
             <img
-              src={url}
-              alt={`Gallery Image ${index + 1}`}
+              src={image.url}
+              alt={image.name}
               class="gallery-item"
             />
           </button>
@@ -32,6 +49,10 @@ const seo = {
     <div id="lightbox" class="lightbox">
       <span class="close">×</span>
       <img id="lightbox-img" class="lightbox-content" src="" alt="Imagem em destaque" />
+      <div class="lightbox-details">
+        <h3 id="lightbox-title"></h3>
+        <p id="lightbox-description"></p>
+      </div>
       <button class="prev">❮</button>
       <button class="next">❯</button>
     </div>
@@ -86,6 +107,12 @@ const seo = {
     max-height: 80%;
   }
 
+  .lightbox-details {
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+  }
+
   .close,
   .prev,
   .next {
@@ -113,10 +140,12 @@ const seo = {
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const imageUrls = JSON.parse(document.currentScript.textContent);
+    const imageData = JSON.parse(document.currentScript.textContent);
     const galleryGrid = document.querySelector('.gallery-grid');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxDescription = document.getElementById('lightbox-description');
     const closeButton = document.querySelector('.close');
     const prevButton = document.querySelector('.prev');
     const nextButton = document.querySelector('.next');
@@ -126,7 +155,9 @@ const seo = {
     // Funções de manipulação da Lightbox
     function openLightbox(index) {
       currentImageIndex = index;
-      lightboxImg.src = imageUrls[index];
+      lightboxImg.src = imageData[index].url;
+      lightboxTitle.textContent = imageData[index].name;
+      lightboxDescription.textContent = imageData[index].description;
       lightbox.style.display = 'flex';
     }
 
@@ -135,13 +166,17 @@ const seo = {
     }
 
     function prevImage() {
-      currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
-      lightboxImg.src = imageUrls[currentImageIndex];
+      currentImageIndex = (currentImageIndex - 1 + imageData.length) % imageData.length;
+      lightboxImg.src = imageData[currentImageIndex].url;
+      lightboxTitle.textContent = imageData[currentImageIndex].name;
+      lightboxDescription.textContent = imageData[currentImageIndex].description;
     }
 
     function nextImage() {
-      currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
-      lightboxImg.src = imageUrls[currentImageIndex];
+      currentImageIndex = (currentImageIndex + 1) % imageData.length;
+      lightboxImg.src = imageData[currentImageIndex].url;
+      lightboxTitle.textContent = imageData[currentImageIndex].name;
+      lightboxDescription.textContent = imageData[currentImageIndex].description;
     }
 
     // Adiciona event listeners para cada imagem
@@ -160,6 +195,8 @@ const seo = {
 </script>
 <script is:inline>
   {
-    JSON.stringify(imageUrls);
+    JSON.stringify(imageData);
   }
 </script>
+
+    
