@@ -4,8 +4,7 @@ import Layout from '../../layouts/Page.astro';
 
 // Importa as imagens da pasta /src/assets/gallery
 const images = import.meta.glob('/src/assets/gallery/*.jpg', { eager: true });
-const imagePaths = Object.keys(images);
-const imageUrls = imagePaths.map(path => images[path].default);
+const imageUrls = Object.values(images).map((image) => image.default);
 
 const seo = {
   title: 'Gallery | Astro Odyssey Theme',
@@ -19,23 +18,24 @@ const seo = {
       <h2>Photo Gallery</h2>
       <div class="gallery-grid">
         {imageUrls.map((url, index) => (
-          <img
-            src={url}
-            alt={`Gallery Image ${index + 1}`}
-            class="gallery-item"
-            onClick={() => window.openLightbox(index)}
-          />
+          <button class="gallery-item-button" data-index={index}>
+            <img
+              src={url}
+              alt={`Gallery Image ${index + 1}`}
+              class="gallery-item"
+            />
+          </button>
         ))}
       </div>
     </section>
-  </Container>
 
-  <div id="lightbox" class="lightbox">
-    <span class="close" onClick={() => window.closeLightbox()}>&times;</span>
-    <img id="lightbox-img" class="lightbox-content" />
-    <button class="prev" onClick={() => window.prevImage()}>&#10094;</button>
-    <button class="next" onClick={() => window.nextImage()}>&#10095;</button>
-  </div>
+    <div id="lightbox" class="lightbox">
+      <span class="close">×</span>
+      <img id="lightbox-img" class="lightbox-content" src="" alt="Imagem em destaque" />
+      <button class="prev">❮</button>
+      <button class="next">❯</button>
+    </div>
+  </Container>
 </Layout>
 
 <style>
@@ -50,10 +50,17 @@ const seo = {
     padding: 20px;
   }
 
+  .gallery-item-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
   .gallery-item {
     width: 100%;
     height: auto;
-    cursor: pointer;
     border-radius: 8px;
     transition: transform 0.2s ease-in-out;
   }
@@ -79,11 +86,15 @@ const seo = {
     max-height: 80%;
   }
 
-  .close, .prev, .next {
+  .close,
+  .prev,
+  .next {
     position: absolute;
     color: white;
     font-size: 2rem;
     cursor: pointer;
+    border: none;
+    background: none;
   }
 
   .close {
@@ -100,34 +111,55 @@ const seo = {
   }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const imageUrls = JSON.parse(document.currentScript.textContent);
+    const galleryGrid = document.querySelector('.gallery-grid');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeButton = document.querySelector('.close');
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+
+    let currentImageIndex = 0;
+
+    // Funções de manipulação da Lightbox
+    function openLightbox(index) {
+      currentImageIndex = index;
+      lightboxImg.src = imageUrls[index];
+      lightbox.style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+    }
+
+    function prevImage() {
+      currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+      lightboxImg.src = imageUrls[currentImageIndex];
+    }
+
+    function nextImage() {
+      currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+      lightboxImg.src = imageUrls[currentImageIndex];
+    }
+
+    // Adiciona event listeners para cada imagem
+    galleryGrid.addEventListener('click', (event) => {
+      if (event.target.classList.contains('gallery-item')) {
+        const index = parseInt(event.target.parentElement.dataset.index);
+        openLightbox(index);
+      }
+    });
+
+    // Adiciona event listeners aos botões da Lightbox
+    closeButton.addEventListener('click', closeLightbox);
+    prevButton.addEventListener('click', prevImage);
+    nextButton.addEventListener('click', nextImage);
+  });
+</script>
 <script is:inline>
-  let currentImageIndex = 0;
-  // Converte o array imageUrls para o lado do cliente
-  const clientImageUrls = JSON.parse("{JSON.stringify(imageUrls)}");
-
-  function openLightbox(index) {
-    currentImageIndex = index;
-    document.getElementById('lightbox').style.display = 'flex';
-    document.getElementById('lightbox-img').src = clientImageUrls[index];
+  {
+    JSON.stringify(imageUrls);
   }
-
-  function closeLightbox() {
-    document.getElementById('lightbox').style.display = 'none';
-  }
-
-  function prevImage() {
-    currentImageIndex = (currentImageIndex - 1 + clientImageUrls.length) % clientImageUrls.length;
-    document.getElementById('lightbox-img').src = clientImageUrls[currentImageIndex];
-  }
-
-  function nextImage() {
-    currentImageIndex = (currentImageIndex + 1) % clientImageUrls.length;
-    document.getElementById('lightbox-img').src = clientImageUrls[currentImageIndex];
-  }
-
-  // Expor as funções para o escopo global para que os atributos onClick as encontrem
-  window.openLightbox = openLightbox;
-  window.closeLightbox = closeLightbox;
-  window.prevImage = prevImage;
-  window.nextImage = nextImage;
 </script>
