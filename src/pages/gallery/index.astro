@@ -2,10 +2,8 @@
 import { Container } from '@components/odyssey-theme';
 import Layout from '../../layouts/Page.astro';
 
-// 1. Importar as imagens da pasta /src/assets/gallery
+// Importa as imagens da pasta /src/assets/gallery
 const images = import.meta.glob('/src/assets/gallery/*.jpg', { eager: true });
-
-// 2. Obter as chaves (caminhos) e mapear para os URLs corretos
 const imagePaths = Object.keys(images);
 const imageUrls = imagePaths.map(path => images[path].default);
 
@@ -25,7 +23,7 @@ const seo = {
             src={url}
             alt={`Gallery Image ${index + 1}`}
             class="gallery-item"
-            onClick={() => window.openLightbox(index)}  <!-- Chama a função global -->
+            onClick={() => window.openLightbox(index)}
           />
         ))}
       </div>
@@ -103,15 +101,14 @@ const seo = {
 </style>
 
 <script is:inline>
-  // 3. Transformar a lista de URLs em array para o script
-  //    (stringify no frontmatter e parse no script)
-  const imagesArray = JSON.parse("{JSON.stringify(imageUrls)}");
   let currentImageIndex = 0;
+  // Converte o array imageUrls para o lado do cliente
+  const clientImageUrls = JSON.parse("{JSON.stringify(imageUrls)}");
 
   function openLightbox(index) {
     currentImageIndex = index;
     document.getElementById('lightbox').style.display = 'flex';
-    document.getElementById('lightbox-img').src = imagesArray[index];
+    document.getElementById('lightbox-img').src = clientImageUrls[index];
   }
 
   function closeLightbox() {
@@ -119,16 +116,16 @@ const seo = {
   }
 
   function prevImage() {
-    currentImageIndex = (currentImageIndex - 1 + imagesArray.length) % imagesArray.length;
-    document.getElementById('lightbox-img').src = imagesArray[currentImageIndex];
+    currentImageIndex = (currentImageIndex - 1 + clientImageUrls.length) % clientImageUrls.length;
+    document.getElementById('lightbox-img').src = clientImageUrls[currentImageIndex];
   }
 
   function nextImage() {
-    currentImageIndex = (currentImageIndex + 1) % imagesArray.length;
-    document.getElementById('lightbox-img').src = imagesArray[currentImageIndex];
+    currentImageIndex = (currentImageIndex + 1) % clientImageUrls.length;
+    document.getElementById('lightbox-img').src = clientImageUrls[currentImageIndex];
   }
 
-  // 4. Expor as funções no escopo global para que onClick() do HTML as encontre
+  // Expor as funções para o escopo global para que os atributos onClick as encontrem
   window.openLightbox = openLightbox;
   window.closeLightbox = closeLightbox;
   window.prevImage = prevImage;
