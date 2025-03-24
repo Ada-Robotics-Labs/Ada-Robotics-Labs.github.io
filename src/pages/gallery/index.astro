@@ -11,7 +11,7 @@ const imageData = [
     description: 'Uma bela paisagem.'
   },
   {
-    url: '/assets/gallery/image1.jpg',
+    url: '/assets/gallery/imae1.jpg',
     name: 'Imagem 2',
     description: 'Um retrato artístico.'
   },
@@ -154,11 +154,13 @@ const seo = {
 
     // Funções de manipulação da Lightbox
     function openLightbox(index) {
+      console.log("Abrindo lightbox para o índice:", index); // Adicione este log
       currentImageIndex = index;
       lightboxImg.src = imageData[index].url;
       lightboxTitle.textContent = imageData[index].name;
       lightboxDescription.textContent = imageData[index].description;
       lightbox.style.display = 'flex';
+      console.log("Lightbox display:", lightbox.style.display); // Verifique o valor de display
     }
 
     function closeLightbox() {
@@ -183,6 +185,7 @@ const seo = {
     galleryGrid.addEventListener('click', (event) => {
       if (event.target.classList.contains('gallery-item')) {
         const index = parseInt(event.target.parentElement.dataset.index);
+        console.log("Índice da imagem clicada:", index); // Adicione este log
         openLightbox(index);
       }
     });
@@ -198,5 +201,3 @@ const seo = {
     JSON.stringify(imageData);
   }
 </script>
-
-    
