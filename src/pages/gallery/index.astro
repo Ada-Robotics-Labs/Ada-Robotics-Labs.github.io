@@ -91,7 +91,7 @@ const seo = {
   }
 
   .lightbox {
-    display: none;
+    display: none !important; /* Garante que não seja sobreposto */
     position: fixed;
     top: 0;
     left: 0;
@@ -100,6 +100,7 @@ const seo = {
     background: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
+    z-index: 1000; /* Garante que fique acima de outros elementos */
   }
 
   .lightbox-content {
@@ -154,13 +155,11 @@ const seo = {
 
     // Funções de manipulação da Lightbox
     function openLightbox(index) {
-      console.log("Abrindo lightbox para o índice:", index); // Adicione este log
       currentImageIndex = index;
       lightboxImg.src = imageData[index].url;
       lightboxTitle.textContent = imageData[index].name;
       lightboxDescription.textContent = imageData[index].description;
       lightbox.style.display = 'flex';
-      console.log("Lightbox display:", lightbox.style.display); // Verifique o valor de display
     }
 
     function closeLightbox() {
@@ -178,14 +177,14 @@ const seo = {
       currentImageIndex = (currentImageIndex + 1) % imageData.length;
       lightboxImg.src = imageData[currentImageIndex].url;
       lightboxTitle.textContent = imageData[currentImageIndex].name;
-      lightboxDescription.textContent = imageData[currentImageIndex].description;
+      lightboxDescription = imageData[currentImageIndex].description;
     }
 
     // Adiciona event listeners para cada imagem
     galleryGrid.addEventListener('click', (event) => {
       if (event.target.classList.contains('gallery-item')) {
         const index = parseInt(event.target.parentElement.dataset.index);
-        console.log("Índice da imagem clicada:", index); // Adicione este log
+        alert("Imagem clicada!"); // Adiciona este alert
         openLightbox(index);
       }
     });
