@@ -4,8 +4,6 @@ import Layout from '../../layouts/Page.astro';
 
 const images = import.meta.glob('/src/assets/gallery/*.jpg', { eager: true });
 const imagePaths = Object.keys(images);
-
-// Cria um array com as URLs das imagens (usando a propriedade "default")
 const imageUrls = imagePaths.map(path => images[path].default);
 
 const seo = {
@@ -19,9 +17,9 @@ const seo = {
     <section class="gallery">
       <h2>Photo Gallery</h2>
       <div class="gallery-grid">
-        {imagePaths.map((imagePath, index) => (
+        {imageUrls.map((url, index) => (
           <img
-            src={images[imagePath].default}
+            src={url}
             alt={`Gallery Image ${index + 1}`}
             class="gallery-item"
             onClick={() => openLightbox(index)}
@@ -32,10 +30,10 @@ const seo = {
   </Container>
 
   <div id="lightbox" class="lightbox">
-    <span class="close" onClick={closeLightbox}>&times;</span>
+    <span class="close" onClick={() => closeLightbox()}>&times;</span>
     <img id="lightbox-img" class="lightbox-content" />
-    <button class="prev" onClick={prevImage}>&#10094;</button>
-    <button class="next" onClick={nextImage}>&#10095;</button>
+    <button class="prev" onClick={() => prevImage()}>&#10094;</button>
+    <button class="next" onClick={() => nextImage()}>&#10095;</button>
   </div>
 </Layout>
 
@@ -103,7 +101,6 @@ const seo = {
 
 <script is:inline>
   let currentImageIndex = 0;
-  // Passa o array de URLs para o script (o JSON.stringify garante que seja uma string JSON válida)
   const imageUrls = {JSON.stringify(imageUrls)};
 
   function openLightbox(index) {
@@ -125,4 +122,10 @@ const seo = {
     currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
     document.getElementById('lightbox-img').src = imageUrls[currentImageIndex];
   }
+
+  // Expor as funções para o escopo global para que os atributos onClick consigam acessá-las
+  window.openLightbox = openLightbox;
+  window.closeLightbox = closeLightbox;
+  window.prevImage = prevImage;
+  window.nextImage = nextImage;
 </script>
