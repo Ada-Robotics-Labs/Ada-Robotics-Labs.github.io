@@ -2,7 +2,7 @@
 import { Container } from '@components/odyssey-theme';
 import Layout from '../../layouts/Page.astro';
 
-const images = import.meta.glob('/src/assets/gallery/*.jpg', { eager: true });
+const images = import.meta.glob('/assets/gallery/*.jpg', { eager: true });
 const imagePaths = Object.keys(images);
 const imageUrls = imagePaths.map(path => images[path].default);
 
