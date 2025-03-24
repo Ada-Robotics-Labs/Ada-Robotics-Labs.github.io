@@ -1,0 +1,73 @@
+---
+// src/components/Gallery.astro
+import Lightbox from './Lightbox.astro';
+
+const images = await Astro.glob('/src/assets/gallery/*.{jpg,jpeg,png,gif}');
+
+interface Image {
+  src: string;
+  alt: string;
+}
+---
+
+<div class="gallery">
+  <div class="gallery-grid">
+    {images.map((image: Image, index: number) => (
+      <button class="gallery-item-button" data-index={index}>
+        <img
+          src={image.src}
+          alt={image.alt}
+          class="gallery-item"
+        />
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  import { openLightbox } from '../utils/lightbox'; // Importe a função
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const galleryGrid = document.querySelector('.gallery');
+
+    galleryGrid.addEventListener('click', (event) => {
+      if (event.target.classList.contains('gallery-item')) {
+        const index = parseInt(event.target.parentElement.dataset.index);
+        openLightbox(index);
+      }
+    });
+  });
+</script>
+
+
+<style>
+  .gallery {
+    text-align: center;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .gallery-item-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .gallery-item {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .gallery-item:hover {
+    transform: scale(1.05);
+  }
+</style>
