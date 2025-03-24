@@ -35,13 +35,12 @@ const seo = {
       <h2>Photo Gallery</h2>
       <div class="gallery-grid">
         {imageData.map((image, index) => (
-          <button class="gallery-item-button" data-index={index}>
-            <img
-              src={image.url}
-              alt={image.name}
-              class="gallery-item"
-            />
-          </button>
+          <img
+            src={image.url}
+            alt={image.name}
+            class="gallery-item"
+            data-index={index}
+          />
         ))}
       </div>
     </section>
@@ -71,19 +70,12 @@ const seo = {
     padding: 20px;
   }
 
-  .gallery-item-button {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-  }
-
   .gallery-item {
     width: 100%;
     height: auto;
     border-radius: 8px;
     transition: transform 0.2s ease-in-out;
+    cursor: pointer;
   }
 
   .gallery-item:hover {
@@ -170,7 +162,7 @@ const seo = {
       currentImageIndex = (currentImageIndex - 1 + imageData.length) % imageData.length;
       lightboxImg.src = imageData[currentImageIndex].url;
       lightboxTitle.textContent = imageData[currentImageIndex].name;
-      lightboxDescription.textContent = imageData[currentImageIndex].description;
+      lightboxDescription = imageData[currentImageIndex].description;
     }
 
     function nextImage() {
@@ -181,12 +173,12 @@ const seo = {
     }
 
     // Adiciona event listeners para cada imagem
-    galleryGrid.addEventListener('click', (event) => {
-      if (event.target.classList.contains('gallery-item')) {
-        const index = parseInt(event.target.parentElement.dataset.index);
-        alert("Imagem clicada!"); // Adiciona este alert
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    galleryItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        const index = parseInt(item.dataset.index);
         openLightbox(index);
-      }
+      });
     });
 
     // Adiciona event listeners aos botões da Lightbox
