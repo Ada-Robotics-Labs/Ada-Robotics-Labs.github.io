@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
   lightboxImg = document.getElementById('lightbox-img');
   lightboxTitle = document.getElementById('lightbox-title');
   lightboxDescription = document.getElementById('lightbox-description');
+
+  // Tornar as funções acessíveis globalmente
+  window.openLightbox = openLightbox;
+  window.closeLightbox = closeLightbox;
+  window.prevImage = prevImage;
+  window.nextImage = nextImage;
 });
 
 export function getImageData() {

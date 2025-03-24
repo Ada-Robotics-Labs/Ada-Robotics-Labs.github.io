@@ -1,17 +1,16 @@
 ---
 // src/components/Lightbox.astro
-import { getImageData, closeLightbox, nextImage, prevImage } from '../utils/lightbox';
 ---
 
 <div id="lightbox" class="lightbox">
-  <span class="close" onclick="closeLightbox()">×</span>
+  <span class="close" onclick="window.closeLightbox()">×</span>
   <img id="lightbox-img" class="lightbox-content" src="" alt="Imagem em destaque" />
   <div class="lightbox-details">
     <h3 id="lightbox-title"></h3>
     <p id="lightbox-description"></p>
   </div>
-  <button class="prev" onclick="prevImage()">❮</button>
-  <button class="next" onclick="nextImage()">❯</button>
+  <button class="prev" onclick="window.prevImage()">❮</button>
+  <button class="next" onclick="window.nextImage()">❯</button>
 </div>
 
 <style>
@@ -26,6 +25,7 @@ import { getImageData, closeLightbox, nextImage, prevImage } from '../utils/ligh
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    flex-direction: column; /* Adicionado */
   }
 
   .lightbox-content {
@@ -36,7 +36,16 @@ import { getImageData, closeLightbox, nextImage, prevImage } from '../utils/ligh
   .lightbox-details {
     color: white;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 5px; /* Reduzido */
+  }
+
+  .lightbox-details h3 {
+    font-size: 1.2rem; /* Reduzido */
+    margin-bottom: 0.5rem; /* Adicionado */
+  }
+
+  .lightbox-details p {
+    font-size: 0.9rem; /* Reduzido */
   }
 
   .close,

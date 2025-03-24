@@ -25,7 +25,25 @@ const { images } = Astro.props;
       </button>
     ))}
   </div>
+  <Lightbox/>
 </div>
+
+<script>
+  import { openLightbox } from '../utils/lightbox'; // Importe a função
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const galleryGrid = document.querySelector('.gallery');
+    console.log('GalleryGrid', galleryGrid);
+
+    galleryGrid.addEventListener('click', (event) => {
+      if (event.target.classList.contains('gallery-item')) {
+        const index = parseInt(event.target.parentElement.dataset.index);
+        console.log('Index', index);
+        openLightbox(index);
+      }
+    });
+  });
+</script>
 
 <style>
   .gallery {
