@@ -1,10 +1,9 @@
 ---
 import Layout from '../../layouts/Page.astro';
-import { useState } from 'react';
 
-const images = await Astro.glob('/assets/gallery/*.jpg').then(files =>
-    files.map(file => file.url)
-);
+const images = import.meta.glob('/src/assets/gallery/*.jpg', { eager: true });
+
+const imagePaths = Object.keys(images);
 
 const seo = {
     title: 'Gallery | Astro Odyssey Theme',
@@ -17,11 +16,11 @@ const seo = {
         <section class="gallery">
             <h2>Photo Gallery</h2>
             <div class="gallery-grid">
-                {images.map((image, index) => (
-                    <img 
-                        src={image} 
-                        alt={`Gallery Image ${index + 1}`} 
-                        class="gallery-item" 
+                {imagePaths.map((imagePath, index) => (
+                    <img
+                        src={images[imagePath].default}
+                        alt={`Gallery Image ${index + 1}`}
+                        class="gallery-item"
                         onClick={() => openLightbox(index)}
                     />
                 ))}
@@ -99,9 +98,9 @@ const seo = {
     }
 </style>
 
-<script>
+<script is:inline>
     let currentImageIndex = 0;
-    const images = {JSON.stringify(images)};
+    const images = {JSON.stringify(imagePaths)};
 
     function openLightbox(index) {
         currentImageIndex = index;
